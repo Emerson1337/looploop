@@ -114,12 +114,8 @@ Hook scripts are written in Node.js (`.mjs`). Claude Code already requires Node.
 
 ## Credits
 
-Thanks to for sharing insights:
+Thanks to [Fabio Akita](https://github.com/akitaonrails) for sharing insights.
 
-- [Fabio Akita](https://github.com/akitaonrails)
+Inspired by [Ralph Loop](https://github.com/ralphloop).
 
-And the concept from:
-
-- [Ralph Loop](https://github.com/ralphloop)
-
-This plugin wouldn't be done without these.
+Looploop wouldn't be done without these.
