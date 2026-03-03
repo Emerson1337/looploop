@@ -1,10 +1,6 @@
 # looploop
 
-<p align="center">
-  <img src="avatar.jpg" alt="looploop" width="200" />
-</p>
-
-<p align="center"><em>noot noot</em></p>
+![LoopLoop](avatar.webp)
 
 XP pair-programming plugin for Claude Code. PRD-driven TDD with iterative implementation.
 
