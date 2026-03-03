@@ -76,6 +76,89 @@ Understand → Test Guard → Implement → Verify
 
 ## How It Works
 
+### Flow Overview
+
+#### Full Mode — `/looploop`
+
+```mermaid
+flowchart TD
+    Start(["/looploop Build a REST API..."]) --> Detect["Detect stack & test framework"]
+    Detect --> Config["Configure session\n(type, iterations, team mode)"]
+
+    Config --> PRD_Start["Phase 1: PRD"]
+    PRD_Start --> Architect["prd-architect\nGenerates technical PRD"]
+    Architect --> Reviewer["prd-reviewer\nRefines & validates PRD"]
+    Reviewer --> Approve{"User approves\nPRD?"}
+    Approve -- Edit --> Reviewer
+    Approve -- Yes --> TDD_Start
+
+    TDD_Start["Phase 2: TDD"] --> TestWriter["test-writer\nWrites tests from PRD"]
+    TestWriter --> RunTests1["Run tests\n(expect failures — no impl yet)"]
+    RunTests1 --> Snapshot1["Write snapshot"]
+    Snapshot1 --> TDD_Check{"More TDD\niterations?"}
+    TDD_Check -- "Yes (default: 2)" --> TestWriter
+    TDD_Check -- No --> Impl_Start
+
+    Impl_Start["Phase 3: Implementation"] --> TeamCheck{"Team mode?"}
+
+    TeamCheck -- No --> Implementer["implementer\nWrites code to pass tests"]
+    Implementer --> RunTests2["Run full test suite"]
+    RunTests2 --> FixImpl{"Tests pass?"}
+    FixImpl -- "No → fix code" --> Implementer
+    FixImpl -- Yes --> Snapshot2["Write snapshot"]
+
+    TeamCheck -- Yes --> Lead["implementer-lead\nSplits work into domains"]
+    Lead --> Spawn["Spawn workers\n(1 per domain, isolated worktrees)"]
+    Spawn --> Parallel["Workers implement\nin parallel"]
+    Parallel --> Integrate["Lead integrates &\nresolves conflicts"]
+    Integrate --> RunTests3["Run full test suite"]
+    RunTests3 --> Snapshot2
+
+    Snapshot2 --> Impl_Check{"More impl\niterations?"}
+    Impl_Check -- "Yes (default: 3)" --> Impl_Start
+    Impl_Check -- No --> Summary
+
+    Summary(["Phase 4: Summary\nTests passing · Files changed · Next steps"])
+
+    style Start fill:#6366f1,color:#fff
+    style Summary fill:#22c55e,color:#fff
+    style PRD_Start fill:#f59e0b,color:#fff
+    style TDD_Start fill:#06b6d4,color:#fff
+    style Impl_Start fill:#ec4899,color:#fff
+```
+
+#### Light Mode — `/looploop-fix`
+
+```mermaid
+flowchart TD
+    Start(["/looploop-fix Fix token expiry..."]) --> Detect["Detect stack & affected files"]
+
+    Detect --> Guard["Phase 1: Test Guard"]
+    Guard --> FindTests["coverage-guard\nFinds existing tests"]
+    FindTests --> Baseline["Establish baseline\n(run existing tests)"]
+    Baseline --> Missing{"Uncovered\ncode?"}
+    Missing -- Yes --> WriteTests["Write missing tests\nfor current behavior"]
+    WriteTests --> Baseline2["Verify new tests pass"]
+    Missing -- No --> Impl
+    Baseline2 --> Impl
+
+    Impl["Phase 2: Implement Fix"] --> MakeFix["Apply targeted changes"]
+    MakeFix --> RunTests["Run test suite"]
+    RunTests --> Check{"Tests pass?"}
+    Check -- "No → adjust fix" --> MakeFix
+    Check -- Yes --> Verify
+
+    Verify["Phase 3: Verify"] --> FullSuite["Run full test suite"]
+    FullSuite --> Compare["Compare against baseline\n(no regressions)"]
+    Compare --> Done(["Summary\nBaseline vs final · Regressions · Status"])
+
+    style Start fill:#6366f1,color:#fff
+    style Done fill:#22c55e,color:#fff
+    style Guard fill:#3b82f6,color:#fff
+    style Impl fill:#ec4899,color:#fff
+    style Verify fill:#f59e0b,color:#fff
+```
+
 ### Agents
 
 | Agent            | Role                                              |
