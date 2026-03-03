@@ -12,10 +12,10 @@ Inside Claude Code, run:
 
 ```bash
 # Add the marketplace (one-time)
-/plugin marketplace add Emerson1337/emerson-plugins
+/plugin marketplace add Emerson1337/erms-arsenal
 
 # Install looploop
-/plugin install looploop@emerson-plugins
+/plugin install looploop@erms-arsenal
 ```
 
 Or install manually:
