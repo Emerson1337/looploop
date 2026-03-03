@@ -8,14 +8,21 @@ You define the skeleton. AI places the organs.
 
 ## Install
 
-Copy or symlink this directory into your Claude Code plugins:
+Inside Claude Code, run:
 
 ```bash
-# Option 1: Symlink
-ln -s /path/to/looploop ~/.claude/plugins/looploop
+# Add the marketplace (one-time)
+/plugin marketplace add Emerson1337/emerson-plugins
 
-# Option 2: Copy
-cp -r /path/to/looploop ~/.claude/plugins/looploop
+# Install looploop
+/plugin install looploop@emerson-plugins
+```
+
+Or install manually:
+
+```bash
+# Clone directly
+git clone git@github.com:Emerson1337/looploop.git ~/.claude/plugins/looploop
 ```
 
 ## Usage

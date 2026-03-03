@@ -1,5 +1,8 @@
 {
   "name": "looploop",
   "description": "XP pair-programming plugin for Claude Code — PRD-driven TDD with iterative implementation",
-  "author": "looploop"
+  "version": "1.0.0",
+  "author": {
+    "name": "Emerson1337"
+  }
 }
