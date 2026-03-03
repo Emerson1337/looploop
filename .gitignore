@@ -1,0 +1,10 @@
+# looploop session state
+.looploop/
+
+# Claude Code local files
+.claude/settings.local.json
+.claude/memory/
+.claude/teams/
+.claude/tasks/
+.claude/worktrees/
+.claude/
