@@ -71,6 +71,7 @@ Understand → Test Guard → Implement → Verify
 ```bash
 /looploop-status    # Check current session progress
 /looploop-resume    # Resume an interrupted session
+/looploop-upgrade   # Upgrade to the latest version
 ```
 
 ## How It Works
