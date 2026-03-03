@@ -1,0 +1,129 @@
+# looploop
+
+<p align="center">
+  <img src="avatar.jpg" alt="looploop" width="200" />
+</p>
+
+<p align="center"><em>noot noot</em></p>
+
+XP pair-programming plugin for Claude Code. PRD-driven TDD with iterative implementation.
+
+You define the skeleton. AI places the organs.
+
+## Install
+
+Copy or symlink this directory into your Claude Code plugins:
+
+```bash
+# Option 1: Symlink
+ln -s /path/to/looploop ~/.claude/plugins/looploop
+
+# Option 2: Copy
+cp -r /path/to/looploop ~/.claude/plugins/looploop
+```
+
+## Usage
+
+### Full Mode — `/looploop`
+
+For new features and substantial work. Runs the complete pipeline:
+
+```
+PRD → TDD → Implement → Iterate
+```
+
+```bash
+/looploop Build a REST API for user management with JWT auth
+```
+
+**What happens:**
+
+1. Detects your stack and test framework
+2. Generates a technical PRD (auto-reviewed)
+3. Writes tests first — targeting 100% coverage (2 iterations default)
+4. Implements code to pass tests (3 iterations default)
+5. Presents final summary with results
+
+### Light Mode — `/looploop-fix`
+
+For bugfixes, small features, and refactors. Skips PRD ceremony:
+
+```
+Understand → Test Guard → Implement → Verify
+```
+
+```bash
+/looploop-fix Fix token expiry check that allows expired tokens through
+```
+
+**What happens:**
+
+1. Identifies affected files
+2. Finds existing tests, establishes baseline (writes missing tests if needed)
+3. Makes the fix
+4. Verifies no regressions, reports results
+
+### Other Commands
+
+```bash
+/looploop-status    # Check current session progress
+/looploop-resume    # Resume an interrupted session
+```
+
+## How It Works
+
+### Agents
+
+| Agent            | Role                                              |
+| ---------------- | ------------------------------------------------- |
+| `prd-architect`  | Generates PRD from task description               |
+| `prd-reviewer`   | Auto-reviews and refines PRD                      |
+| `test-writer`    | Writes tests before implementation (TDD)          |
+| `implementer`    | Implements code to pass tests                     |
+| `coverage-guard` | Finds/writes tests for affected code (light mode) |
+
+### Iteration Loop
+
+A stop hook (`hooks/check-iteration.mjs`) reads `.looploop/progress.txt` and continues the current phase if iterations remain. Default iterations:
+
+- TDD phase: 2
+- Implementation phase: 3
+
+### Session State
+
+All state lives in `.looploop/` in your project root:
+
+```
+.looploop/
+├── config.json          # Session configuration
+├── progress.txt         # Current phase and iteration
+├── prd.md               # PRD (full mode)
+├── baseline.txt         # Test baseline (light mode)
+└── snapshot-*.md        # Iteration snapshots
+```
+
+Add `.looploop/` to your `.gitignore`.
+
+### Why Node.js?
+
+Hook scripts are written in Node.js (`.mjs`). Claude Code already requires Node.js as a runtime dependency, so it's guaranteed to be available on any machine running this plugin. This gives us cross-platform compatibility (macOS, Linux, Windows) without relying on shell-specific syntax like bash or zsh.
+
+## Philosophy
+
+- **XP pair programming**: AI drives, you navigate
+- **TDD always**: Tests before implementation, no exceptions
+- **Small iterations**: 2-3 passes per phase — enough to refine, cheap on tokens
+- **Simple design**: PRD keeps scope tight, out-of-scope is explicit
+- **Collective ownership**: PRD, tests, and code are all in the repo
+
+## Credits
+
+Thanks to for sharing insights:
+
+- [Fabio Akita](https://github.com/akitaonrails)
+
+And the concept from:
+
+- [Ralph Loop](https://github.com/ralphloop)
+
+This plugin wouldn't be done without these.
