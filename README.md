@@ -66,6 +66,26 @@ Understand → Test Guard → Implement → Verify
 3. Makes the fix
 4. Verifies no regressions, reports results
 
+### Review Mode — `/looploop-review`
+
+Reviews uncommitted changes for test coverage gaps (targeting 100%) and PRD alignment:
+
+```
+Analyze → Review → Offer Fix
+```
+
+```bash
+/looploop-review
+```
+
+**What happens:**
+
+1. Collects all local changes (`git diff`)
+2. Checks if changed code paths have test coverage
+3. If a PRD exists, checks alignment with acceptance criteria
+4. Presents a report with verdict (PASS / NEEDS TESTS / NEEDS REVIEW / NEEDS BOTH)
+5. Offers to auto-write missing tests via `coverage-guard`
+
 ### Other Commands
 
 ```bash
@@ -169,6 +189,7 @@ flowchart TD
 | `implementer`    | Implements code to pass tests                     |
 | `implementer-lead` | Splits PRD into domains, spawns parallel workers (team mode) |
 | `coverage-guard` | Finds/writes tests for affected code (light mode) |
+| `diff-reviewer`  | Reviews diff for test coverage gaps and PRD alignment (review mode) |
 
 ### Team Mode
 
@@ -202,6 +223,7 @@ All state lives in `.looploop/` in your project root:
 ├── progress.txt         # Current phase and iteration
 ├── prd.md               # PRD (full mode)
 ├── baseline.txt         # Test baseline (light mode)
+├── review-report.md     # Review report (review mode)
 └── snapshot-*.md        # Iteration snapshots
 ```
 
