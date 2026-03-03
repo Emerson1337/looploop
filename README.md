@@ -6,6 +6,12 @@ XP pair-programming plugin for Claude Code. PRD-driven TDD with iterative implem
 
 You define the skeleton. AI places the organs.
 
+## Requirements for team mode
+
+[Agent teams](https://code.claude.com/docs/en/agent-teams) are experimental and disabled by default. Enable them by adding `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS` to your `settings.json` or environment. Agent teams have known limitations around session resumption, task coordination, and shutdown behavior.
+
+**Be aware costs scale with the team, so use it sparingly**.
+
 ## Install
 
 Inside Claude Code, run:
@@ -181,15 +187,15 @@ flowchart TD
 
 ### Agents
 
-| Agent            | Role                                              |
-| ---------------- | ------------------------------------------------- |
-| `prd-architect`  | Generates PRD from task description               |
-| `prd-reviewer`   | Auto-reviews and refines PRD                      |
-| `test-writer`    | Writes tests before implementation (TDD)          |
-| `implementer`    | Implements code to pass tests                     |
-| `implementer-lead` | Splits PRD into domains, spawns parallel workers (team mode) |
-| `coverage-guard` | Finds/writes tests for affected code (light mode) |
-| `diff-reviewer`  | Reviews diff for test coverage gaps and PRD alignment (review mode) |
+| Agent              | Role                                                                |
+| ------------------ | ------------------------------------------------------------------- |
+| `prd-architect`    | Generates PRD from task description                                 |
+| `prd-reviewer`     | Auto-reviews and refines PRD                                        |
+| `test-writer`      | Writes tests before implementation (TDD)                            |
+| `implementer`      | Implements code to pass tests                                       |
+| `implementer-lead` | Splits PRD into domains, spawns parallel workers (team mode)        |
+| `coverage-guard`   | Finds/writes tests for affected code (light mode)                   |
+| `diff-reviewer`    | Reviews diff for test coverage gaps and PRD alignment (review mode) |
 
 ### Team Mode
 
