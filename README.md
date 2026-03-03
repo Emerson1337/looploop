@@ -83,7 +83,23 @@ Understand → Test Guard → Implement → Verify
 | `prd-reviewer`   | Auto-reviews and refines PRD                      |
 | `test-writer`    | Writes tests before implementation (TDD)          |
 | `implementer`    | Implements code to pass tests                     |
+| `implementer-lead` | Splits PRD into domains, spawns parallel workers (team mode) |
 | `coverage-guard` | Finds/writes tests for affected code (light mode) |
+
+### Team Mode
+
+Opt-in during `/looploop` setup when asked "Want to use team mode?"
+
+When enabled, the `implementer-lead` agent replaces `implementer` during Phase 3. Each iteration:
+
+1. **Analyze** — Reads PRD and test results, groups work into independent domains (max 5)
+2. **Spawn** — Creates a team with one worker agent per domain, each in an isolated worktree
+3. **Coordinate** — Workers implement their scope in parallel; lead resolves conflicts
+4. **Integrate** — Merges worker output, fixes wiring/re-exports, runs full test suite
+
+The iteration loop runs normally — each iteration spins up a fresh team. First pass gets the bulk done, subsequent passes target remaining failures.
+
+**When to use:** Large features with multiple independent areas (e.g., auth + API + UI). **When not to use:** Small features, tightly coupled code where parallelism adds overhead.
 
 ### Iteration Loop
 

@@ -29,12 +29,22 @@ Resume an interrupted looploop session.
    - Latest snapshot for context
    - Current iteration number
 
-   **Phase: IMPL** → Dispatch implementer agent. Provide:
+   **Phase: IMPL** → Check `config.team`:
+
+   If `team` is false (default): Dispatch **implementer** agent. Provide:
    - `.looploop/prd.md`
    - `.looploop/config.json`
    - Test files
    - Latest snapshot for context
    - Current iteration number
+
+   If `team` is true: Dispatch **implementer-lead** agent. Provide:
+   - `.looploop/prd.md`
+   - `.looploop/config.json`
+   - Test files
+   - Latest snapshot for context
+   - Current iteration number
+   - Note: check for partial worker output before re-planning domains
 
    **Phase: GUARD** (light mode) → Dispatch coverage-guard agent with
    affected files from config.

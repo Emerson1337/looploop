@@ -33,6 +33,9 @@ Do NOT over-explain basics. Be direct, technical, and opinionated.
      "Unit + integration tests. Want to add e2e?" (default: no)
    - Iterations: TDD phase (default: 2), Implementation phase (default: 3)
 
+   **Team mode (opt-in):**
+   - "Want to use team mode? Workers implement domains in parallel." (default: no)
+
 4. Write `.looploop/config.json` with all gathered info:
    ```json
    {
@@ -43,6 +46,7 @@ Do NOT over-explain basics. Be direct, technical, and opinionated.
      "test_dir": "<detected>",
      "tdd_iterations": 2,
      "impl_iterations": 3,
+     "team": false,
      "tests": { "unit": true, "integration": true, "e2e": false },
      "created_at": "<ISO timestamp>"
    }
@@ -92,9 +96,19 @@ Do NOT over-explain basics. Be direct, technical, and opinionated.
     Iteration: 0/{impl_iterations}
     ```
 
-13. Dispatch the **implementer** agent using the Agent tool:
+13. Check `config.team` to determine dispatch mode:
+
+    **If `team` is false (default):**
+    Dispatch the **implementer** agent using the Agent tool:
     - Input: `.looploop/prd.md` + test files + `.looploop/config.json`
     - It implements code to pass tests, runs tests, saves snapshot
+    - It updates `.looploop/progress.txt` with iteration progress
+
+    **If `team` is true:**
+    Dispatch the **implementer-lead** agent using the Agent tool:
+    - Input: `.looploop/prd.md` + test files + `.looploop/config.json`
+    - It splits PRD into domains, spawns workers in parallel, coordinates,
+      and integrates the result
     - It updates `.looploop/progress.txt` with iteration progress
 
 14. The stop hook handles iteration loop automatically.
