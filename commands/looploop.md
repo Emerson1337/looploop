@@ -24,23 +24,46 @@ Do NOT over-explain basics. Be direct, technical, and opinionated.
 
 3. Ask the user these questions using AskUserQuestion (wait for answers):
 
-   **Required:**
-   - What do you want to build? (use their original prompt if provided as $ARGUMENTS)
-   - Is this a new feature, a refactor, or a bugfix?
+   **First call** — if no $ARGUMENTS provided, ask a free-text question for what they want to build.
+   If $ARGUMENTS is provided, skip this and use that as the task description.
 
-   **Test config:**
-   - Tests are ON by default (unit + integration). Only ask:
-     "Unit + integration tests. Want to add e2e?" (default: no)
-   - **Always ask** how many iterations for each phase:
-     - "How many TDD iterations?" (default: 2 — mark as Recommended)
-     - "How many Implementation iterations?" (default: 2 — mark as Recommended)
+   **Second call** — ask all of the following together using AskUserQuestion with multiple questions,
+   each with selectable options (no typing required):
 
-   **Team mode (opt-in):**
-   - "Want to use team mode? Workers implement domains in parallel." (default: no)
+   - header: "Task type"
+     question: "What kind of work is this?"
+     options:
+       - label: "Feature" — new functionality being added
+       - label: "Refactor" — restructuring existing code without changing behavior
+       - label: "Bugfix" — fixing a defect
 
-   **AskUserQuestion formatting rule:**
-   When using AskUserQuestion with options, always append "(Recommended)" to the option
-   you suggest as the best default. This applies to every question with options in this workflow.
+   - header: "E2E tests"
+     question: "Unit + integration tests are on. Add end-to-end tests?"
+     options:
+       - label: "No (Recommended)" — skip e2e tests
+       - label: "Yes" — include e2e tests
+
+   - header: "TDD iterations"
+     question: "How many TDD iterations?"
+     options:
+       - label: "1" — single pass
+       - label: "2 (Recommended)" — two passes
+       - label: "3" — three passes
+       - label: "4" — four passes
+
+   - header: "Impl iterations"
+     question: "How many implementation iterations?"
+     options:
+       - label: "1" — single pass
+       - label: "2 (Recommended)" — two passes
+       - label: "3" — three passes
+       - label: "4" — four passes
+
+   - header: "Team mode"
+     question: "Use team mode? Workers implement domains in parallel."
+     options:
+       - label: "No (Recommended)" — single implementer agent
+       - label: "Yes" — parallel worker agents (experimental)
 
 4. Write `.looploop/config.json` with all gathered info:
    ```json
