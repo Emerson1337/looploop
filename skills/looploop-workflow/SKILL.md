@@ -14,8 +14,8 @@ For new features and substantial work. Follows: **PRD → TDD → Implement → 
 
 - Phase 0: Initialize — detect stack, gather requirements
 - Phase 1: PRD — generate and auto-review a technical PRD
-- Phase 2: TDD — write tests first (default: 2 iterations)
-- Phase 3: Implementation — write code to pass tests (default: 3 iterations)
+- Phase 2: TDD — write tests first (default: 2 iterations, always asked)
+- Phase 3: Implementation — write code to pass tests (default: 2 iterations, always asked)
 - Phase 4: Summary — final results and next steps
 
 ### Light Mode: `/looploop-fix`

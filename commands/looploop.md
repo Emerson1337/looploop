@@ -22,7 +22,7 @@ Do NOT over-explain basics. Be direct, technical, and opinionated.
    - go.mod → Go (go test)
    - If ambiguous, ask the user.
 
-3. Ask the user these questions (wait for answers):
+3. Ask the user these questions using AskUserQuestion (wait for answers):
 
    **Required:**
    - What do you want to build? (use their original prompt if provided as $ARGUMENTS)
@@ -31,10 +31,16 @@ Do NOT over-explain basics. Be direct, technical, and opinionated.
    **Test config:**
    - Tests are ON by default (unit + integration). Only ask:
      "Unit + integration tests. Want to add e2e?" (default: no)
-   - Iterations: TDD phase (default: 2), Implementation phase (default: 3)
+   - **Always ask** how many iterations for each phase:
+     - "How many TDD iterations?" (default: 2 — mark as Recommended)
+     - "How many Implementation iterations?" (default: 2 — mark as Recommended)
 
    **Team mode (opt-in):**
    - "Want to use team mode? Workers implement domains in parallel." (default: no)
+
+   **AskUserQuestion formatting rule:**
+   When using AskUserQuestion with options, always append "(Recommended)" to the option
+   you suggest as the best default. This applies to every question with options in this workflow.
 
 4. Write `.looploop/config.json` with all gathered info:
    ```json
@@ -45,7 +51,7 @@ Do NOT over-explain basics. Be direct, technical, and opinionated.
      "test_runner": "<detected>",
      "test_dir": "<detected>",
      "tdd_iterations": 2,
-     "impl_iterations": 3,
+     "impl_iterations": 2,
      "team": false,
      "tests": { "unit": true, "integration": true, "e2e": false },
      "created_at": "<ISO timestamp>"
