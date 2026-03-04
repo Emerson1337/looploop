@@ -52,7 +52,8 @@ and after the change.
    - Read the source code carefully
    - Write tests covering the CURRENT behavior (before any changes)
    - Focus on: public API, exported functions, class methods
-   - Cover: happy paths, error cases, edge cases
+   - Cover: happy paths and critical failure paths
+   - Be pragmatic — one meaningful test per scenario, not exhaustive permutations
    - Use the project's existing test conventions and patterns
 6. Run the new tests — they must ALL pass against current code.
 
