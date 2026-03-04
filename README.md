@@ -6,6 +6,58 @@ XP pair-programming plugin for Claude Code. PRD-driven TDD with iterative implem
 
 You define the skeleton. AI places the organs.
 
+## When to Use looploop
+
+looploop shines when correctness is verifiable by tests. It struggles when correctness depends on browser behavior that unit tests can't simulate.
+
+### Good case
+
+**Idea:** Domain-logic-heavy app where correctness is verifiable by tests — calculations, rules, state transitions, edge cases.
+
+**Prompt:**
+> Build a personal budget tracker.
+>
+> Stack: React + TypeScript + Vite + Tailwind + Zustand. Persist to localStorage.
+>
+> Domain rules:
+> - Transactions have: amount (in cents), category, date, type (income | expense)
+> - Each category has a monthly spending limit
+> - Remaining = limit − expenses in current calendar month for that category
+> - Over budget when remaining < 0
+> - Savings rate = (income − expenses) / income × 100, clamped to [-100, 100]. If income is 0, rate is 0
+> - Burn rate = total expenses ÷ days elapsed this month (min 1 day)
+> - Projected spend = burn rate × total days in month
+> - At-risk category: projected spend > 80% of limit, even if not yet over budget
+> - All values stored as integer cents to avoid floating-point errors
+>
+> UI: dashboard with totals and savings rate, category list with status (ok / at-risk / over-budget), transaction list filterable by category and month, forms to add transactions and set category limits.
+
+**Why it works:** Every business rule maps directly to a unit test. The test-writer encodes the edge cases (income = 0, cents arithmetic, at-risk threshold) before any code is written. The implementer can't skip them.
+
+---
+
+### Bad case
+
+**Idea:** Visually interactive app where correctness depends on browser behavior that unit tests can't easily simulate.
+
+**Prompt:**
+> Build a Kanban board with drag and drop between columns.
+>
+> Stack: React + TypeScript + Vite + Tailwind + @dnd-kit. Persist to localStorage.
+>
+> - 3 columns: Backlog, In Progress, Done
+> - Cards have title, priority, and description
+> - Drag cards between columns and reorder within columns
+> - Animations on add, delete, and drag
+> - Empty column placeholder
+> - Dark glassmorphism design
+
+**Why it underperforms:** Drag-and-drop correctness lives in browser pointer events and droppable registration — things jsdom can't simulate. The test-writer will test what it can (store logic, renders), but can't write a test that catches a missing `useDroppable` on a column. The implementer passes all tests and ships broken drop behavior. A plain prompt that has seen hundreds of @dnd-kit examples outperforms here.
+
+---
+
+**Rule of thumb:** if the most important bugs would be caught by `expect(result).toBe(x)`, looploop wins. If they'd only be caught by a human clicking around in a browser, it won't.
+
 ## Requirements for team mode
 
 [Agent teams](https://code.claude.com/docs/en/agent-teams) are experimental and disabled by default. Enable them by adding `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS` to your `settings.json` or environment. Agent teams have known limitations around session resumption, task coordination, and shutdown behavior.
@@ -99,6 +151,22 @@ Analyze → Review → Offer Fix
 /looploop-resume    # Resume an interrupted session
 /looploop-upgrade   # Upgrade to the latest version
 ```
+
+## Philosophy
+
+- **XP pair programming**: AI drives, you navigate
+- **TDD always**: Tests before implementation, no exceptions
+- **Small iterations**: 2-3 passes per phase — enough to refine, cheap on tokens
+- **Simple design**: PRD keeps scope tight, out-of-scope is explicit
+- **Collective ownership**: PRD, tests, and code are all in the repo
+
+## Credits
+
+Thanks to [Fabio Akita](https://github.com/akitaonrails) for sharing insights.
+
+Inspired by [Ralph Loop](https://github.com/ralphloop).
+
+Looploop wouldn't be done without these.
 
 ## How It Works
 
@@ -238,71 +306,3 @@ Add `.looploop/` to your `.gitignore`.
 ### Why Node.js?
 
 Hook scripts are written in Node.js (`.mjs`). Claude Code already requires Node.js as a runtime dependency, so it's guaranteed to be available on any machine running this plugin. This gives us cross-platform compatibility (macOS, Linux, Windows) without relying on shell-specific syntax like bash or zsh.
-
-## When to Use looploop
-
-looploop shines when correctness is verifiable by tests. It struggles when correctness depends on browser behavior that unit tests can't simulate.
-
-### Good case
-
-**Idea:** Domain-logic-heavy app where correctness is verifiable by tests — calculations, rules, state transitions, edge cases.
-
-**Prompt:**
-> Build a personal budget tracker.
->
-> Stack: React + TypeScript + Vite + Tailwind + Zustand. Persist to localStorage.
->
-> Domain rules:
-> - Transactions have: amount (in cents), category, date, type (income | expense)
-> - Each category has a monthly spending limit
-> - Remaining = limit − expenses in current calendar month for that category
-> - Over budget when remaining < 0
-> - Savings rate = (income − expenses) / income × 100, clamped to [-100, 100]. If income is 0, rate is 0
-> - Burn rate = total expenses ÷ days elapsed this month (min 1 day)
-> - Projected spend = burn rate × total days in month
-> - At-risk category: projected spend > 80% of limit, even if not yet over budget
-> - All values stored as integer cents to avoid floating-point errors
->
-> UI: dashboard with totals and savings rate, category list with status (ok / at-risk / over-budget), transaction list filterable by category and month, forms to add transactions and set category limits.
-
-**Why it works:** Every business rule maps directly to a unit test. The test-writer encodes the edge cases (income = 0, cents arithmetic, at-risk threshold) before any code is written. The implementer can't skip them.
-
----
-
-### Bad case
-
-**Idea:** Visually interactive app where correctness depends on browser behavior that unit tests can't easily simulate.
-
-**Prompt:**
-> Build a Kanban board with drag and drop between columns.
->
-> Stack: React + TypeScript + Vite + Tailwind + @dnd-kit. Persist to localStorage.
->
-> - 3 columns: Backlog, In Progress, Done
-> - Cards have title, priority, and description
-> - Drag cards between columns and reorder within columns
-> - Animations on add, delete, and drag
-> - Empty column placeholder
-> - Dark glassmorphism design
-
-**Why it underperforms:** Drag-and-drop correctness lives in browser pointer events and droppable registration — things jsdom can't simulate. The test-writer will test what it can (store logic, renders), but can't write a test that catches a missing `useDroppable` on a column. The implementer passes all tests and ships broken drop behavior. A plain prompt that has seen hundreds of @dnd-kit examples outperforms here.
-
----
-
-**Rule of thumb:** if the most important bugs would be caught by `expect(result).toBe(x)`, looploop wins. If they'd only be caught by a human clicking around in a browser, it won't.
-
-## Philosophy
-
-- **XP pair programming**: AI drives, you navigate
-- **TDD always**: Tests before implementation, no exceptions
-- **Small iterations**: 2-3 passes per phase — enough to refine, cheap on tokens
-- **Simple design**: PRD keeps scope tight, out-of-scope is explicit
-- **Collective ownership**: PRD, tests, and code are all in the repo
-
-## Credits
-
-Thanks to [Fabio Akita](https://github.com/akitaonrails) for sharing insights.
-
-Inspired by [Ralph Loop](https://github.com/ralphloop).
-
-Looploop wouldn't be done without these.
